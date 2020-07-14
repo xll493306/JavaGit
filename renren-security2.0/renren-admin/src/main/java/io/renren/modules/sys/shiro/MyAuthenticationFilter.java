@@ -29,12 +29,12 @@ public class MyAuthenticationFilter extends AccessControlFilter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         httpServletResponse.setStatus(200);
         httpServletResponse.setContentType("application/json;charset=utf-8");
+        setHeader((HttpServletRequest) request,httpServletResponse);
         PrintWriter out = httpServletResponse.getWriter();
         JSONObject json = new JSONObject();
         json.put("code","401");
         json.put("msg","用户未登录");
         out.println(json);
-//        httpServletResponse.sendRedirect("/login.html");
         out.flush();
         out.close();
         return false;
@@ -45,5 +45,11 @@ public class MyAuthenticationFilter extends AccessControlFilter {
             return Boolean.TRUE;
         }
         return Boolean.FALSE;
+    }
+    private void setHeader(HttpServletRequest request,HttpServletResponse response){
+        response.setHeader("Access-control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Methods", request.getMethod());
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Headers", request.getHeader("Access-Control-Request-Headers"));
     }
 }
