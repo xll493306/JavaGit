@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.sys.dao.LikeLogDao">
+    <select id="findByAllId" resultType="io.renren.modules.sys.entity.LikeLogEntity">
+        SELECT * from sys_like_log where short_video_id = #{shortVideoId} and open_id =#{openId};
+    </select>
+    <insert id="saveViewLog">
+        INSERT INTO sys_like_log(
+        SHORT_VIDEO_ID, OPEN_ID)VALUES(
+        #{shortVideoId},#{openId}
+        );
+    </insert>
+
+</mapper>

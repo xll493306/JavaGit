@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.sys.dao.SysUserDao">
+	
+	<!-- 查询用户的所有权限 -->
+	<select id="queryAllPerms" resultType="string">
+		select m.perms from sys_user_role ur 
+			LEFT JOIN sys_role_menu rm on ur.role_id = rm.role_id 
+			LEFT JOIN sys_menu m on rm.menu_id = m.menu_id 
+		where ur.user_id = #{userId}
+	</select>
+	
+	<!-- 查询用户的所有菜单ID --> 
+	<select id="queryAllMenuId" resultType="long">
+		select distinct rm.menu_id from sys_user_role ur 
+			LEFT JOIN sys_role_menu rm on ur.role_id = rm.role_id 
+		where ur.user_id = #{userId}
+	</select>
+	<select id="findByName" resultType="io.renren.modules.sys.entity.SysUserEntity">
+		SELECT * FROM sys_user WHERE username =#{username};
+	</select>
+	<select id="findByUserId" resultType="io.renren.modules.sys.entity.SysUserEntity">
+		SELECT su.* ,sd.name as dept_name from sys_user su
+		left join sys_dept sd on su.dept_id = sd.dept_id
+		where user_id =#{userId};
+	</select>
+	<insert id="saveSysUser"
+			keyProperty="userId" useGeneratedKeys="true">
+		INSERT INTO sys_user(
+		open_id,
+		username,full_name,
+		 password, salt,
+		  status, dept_id,
+		   create_time) VALUES(
+		   #{openId},
+		   #{username},#{fullName},
+		   #{password},#{salt},
+		   #{status},#{deptId},
+		   #{createTime});
+	</insert>
+	<update id="updateDeptId">
+		update sys_user set dept_id=#{deptId} where user_id=#{userId};
+	</update>
+	<update id="updateFullName">
+		update sys_user set full_name=#{fullName} where user_id=#{userId};
+	</update>
+	<update id="updateUsername">
+		update sys_user set username=#{username} where user_id=#{userId};
+	</update>
+
+</mapper>

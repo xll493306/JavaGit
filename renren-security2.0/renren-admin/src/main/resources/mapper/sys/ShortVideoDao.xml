@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.sys.dao.ShortVideoDao">
+    <resultMap id="ShortVideoEntityMapper" type="io.renren.modules.sys.entity.ShortVideoEntity">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="competitor" property="competitor"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="poster_url" property="posterUrl"/>
+        <result column="url" property="url"/>
+        <result column="view" property="view"/>
+        <result column="like" property="like"/>
+        <result column="stage" property="stage"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_user_id" property="updateUserId"/>
+    </resultMap>
+    <select id="selectPage" resultMap="ShortVideoEntityMapper">
+        select tsv.*,sd.dept_id,sd.name as dept_name,
+        count(distinct svl.open_id) as view_number,
+        count(distinct sll.open_id) as like_number
+        from tb_short_video tsv
+        left join sys_user su on tsv.user_id = su.user_id
+        left join sys_dept sd on su.dept_id = sd.dept_id
+        left join sys_view_log svl on tsv.id = svl.short_video_id
+        left join sys_like_log sll on tsv.id = sll.short_video_id
+        <where>
+            ${ew.sqlSegment}
+        </where>
+        group by tsv.id
+    </select>
+    <select id="findById" resultMap="ShortVideoEntityMapper">
+        SELECT tsv.* ,sd.dept_id,sd.name as dept_name,
+        count(distinct svl.open_id) as view_number,
+        count(distinct sll.open_id) as like_number
+        FROM tb_short_video tsv
+        left join sys_user su on tsv.user_id = su.user_id
+        left join sys_dept sd on su.dept_id = sd.dept_id
+        left join sys_view_log svl on tsv.id = svl.short_video_id
+        left join sys_like_log sll on tsv.id = sll.short_video_id
+        where id=#{id}
+        group by tsv.id;
+    </select>
+    <select id="queryAllShortVideo" resultMap="ShortVideoEntityMapper">
+        SELECT tsv.* ,sd.dept_id,sd.name as dept_name,
+         count(distinct svl.open_id) as view_number,
+         count(distinct sll.open_id) as like_number
+         FROM tb_short_video tsv
+         left join sys_user su on tsv.user_id = su.user_id
+         left join sys_dept sd on su.dept_id = sd.dept_id
+         left join sys_view_log svl on tsv.id = svl.short_video_id
+         left join sys_like_log sll on tsv.id = sll.short_video_id
+         where tsv.user_id=#{userId}
+         group by tsv.id;
+    </select>
+    <insert id="saveShortVideo"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO tb_short_video(
+        user_id,
+        competitor, name,
+        description, poster_url,
+        URL,
+        stage,
+        create_time) VALUES (
+        #{userId},
+        #{competitor},#{name},
+        #{description},#{posterUrl},
+        #{url},
+        #{stage},
+        #{createTime}
+        );
+    </insert>
+    <update id="updateStageById">
+        update tb_short_video
+        set stage = #{stage},
+        update_time =#{updateTime},
+        update_user_id =#{updateUserId}
+        where id =#{id};
+    </update>
+</mapper>
