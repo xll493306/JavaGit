@@ -54,6 +54,9 @@ $(function () {
 var vm = new Vue({
 	el:'#rrapp',
 	data:{
+        q:{
+            competitor: null
+        },
 		showList: true,
 		title: null,
 		shortVideo: {}
@@ -188,9 +191,9 @@ var vm = new Vue({
 		reload: function (event) {
 			vm.showList = true;
 			var page = $("#jqGrid").jqGrid('getGridParam','page');
-			$("#jqGrid").jqGrid('setGridParam',{ 
-                page:page,
-                // deptId:
+			$("#jqGrid").jqGrid('setGridParam',{
+                competitor:{'competitor':vm.q.competitor},
+                page:page
             }).trigger("reloadGrid");
 		}
 	}

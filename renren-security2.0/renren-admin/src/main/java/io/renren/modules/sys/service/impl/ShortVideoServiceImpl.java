@@ -31,6 +31,7 @@ public class ShortVideoServiceImpl extends ServiceImpl<ShortVideoDao, ShortVideo
         String[] splitStage ;
         String deptId = null;
         String stage =(String) params.get("stage");
+        String competitor =(String) params.get("competitor");
         SysUserEntity user = ShiroUtils.getUserEntity();
         if(user == null) {
             deptId = (String) params.get("deptId");
@@ -52,6 +53,7 @@ public class ShortVideoServiceImpl extends ServiceImpl<ShortVideoDao, ShortVideo
             new QueryWrapper<ShortVideoEntity>()
                 .eq(StringUtils.isNotBlank(deptId),"sd.dept_id",deptId)
                 .in(StringUtils.isNotBlank(stage),"tsv.stage",splitStage)
+                .like(StringUtils.isNotBlank(competitor),"competitor",competitor)
         );
         return new PageUtils(page);
     }
